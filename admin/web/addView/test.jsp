@@ -10,28 +10,27 @@
     <title>Title</title>
 </head>
 <body>
-<%! String cid=null;
-    ResultSet set=null;
+<%
+    Connection con=ConnectionDB.getConnectioinstance();
+    PreparedStatement pre= con.prepareStatement("SELECT * FROM tutorialpoint.courseindex");
+%>
 
-%>
 <%
-    Connection con= ConnectionDB.getConnectioinstance();
-    PreparedStatement pre=con.prepareStatement("select * from courseindex where courseid=?");
-    pre.setString(1,cid);
-    set=pre.executeQuery();
+    ResultSet set= pre.executeQuery();
 %>
-<%= set %>
+<%-- while start --%>
 <%
-    while (set.next()) {
+    while(set.next())
+    {
 %>
 <%= set.getString(1) %>
 <%= set.getString(2) %>
 <%= set.getString(3) %>
+<br>
 
 <%
     }
 %>
-
 </body>
 
 

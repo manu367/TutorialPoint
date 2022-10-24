@@ -14,21 +14,35 @@
 
     </style>
     <script src="https://cdn.ckeditor.com/4.20.0/full-all/ckeditor.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 </head>
 <body>
+<%!  String c_index_id=null;
+%>
+<%
+     c_index_id=request.getParameter("courseindexid");
+    System.out.println(c_index_id);
+%>
 <jsp:include page="/header.jsp"></jsp:include>
-<div class="container-fluid mt-3 mb-4 ">
+
+<div class="container mt-5" id="hidebtn">
+    <div class="row">
+        <div class="col-6 offset-4"><div id="link" class="mx-5"><a href="courseindex" class="btn btn-outline-warning"> << Back to page</a></div></div>
+    </div>
+</div>
+
+<div id="edt" class="container-fluid mt-3 mb-4 ">
     <div class="row">
         <div class="col-10 offset-1">
             <div class="containermanu container mb-4 mt-3">
                 <div class="row">
-                    <div class="col-12">
-                        <textarea name="editor1"></textarea>
+                    <div class="col-12" >
+                        <textarea name="editor1" ></textarea>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-8 offset-2 mt-3">
-                        <button class="btn btn-outline-success float-start">Save</button>
+                        <button class="btn btn-outline-success float-start" id="savedata">Save</button>
                         <button class="btn btn-danger float-end">Cancel</button>
 
                     </div>
@@ -37,11 +51,46 @@
         </div>
     </div>
 </div>
-<jsp:include page="/footer.jsp"></jsp:include>
+
+
+
+<div id="contentid" style="visibility: hidden"><%= c_index_id %></div>
 
 </body>
-<script>
-    CKEDITOR.replace( 'editor1' );
-</script>
+<script src="static_folder/javascript/sweetalert.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3" crossorigin="anonymous"></script>
+<script>
+    $(document).ready(()=>{
+        let cke=CKEDITOR.replace( 'editor1' );
+        let contentid=document.getElementById("contentid");
+        let contentvalue=contentid.innerHTML;
+        $("#hidebtn").hide();
+        $("#savedata").click(()=>{
+
+            let data=cke.getData();
+            let data1=data;
+            console.log(""+data1);
+            console.log(data)
+            //alert("clcick");
+            console.log("editor value ="+data1);
+            console.log("index value"+contentvalue);
+            $.post("CourseDataSave",{
+                editordata:data,
+                indexid:contentvalue
+            },(data,status)=>{
+                alert("ho gya");
+            });
+            $( document ).ajaxComplete(function() {
+                $("#edt").hide();
+                $("#hidebtn").show();
+            });
+
+            $( document ).ajaxError(function( event, jqxhr, settings, thrownError ) {
+                if ( settings.url == "CourseDataSave" ) {
+                    alert("error found");
+                }});
+
+        });
+    });
+</script>
 </html>

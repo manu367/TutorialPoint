@@ -16,21 +16,14 @@
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
 </head>
 <body>
-<%! String cid=null;
-ResultSet set=null;
 
-%>
 <%
-    response.setContentType("text/html");
-    if(request.getMethod().equalsIgnoreCase("post")){
-      cid=request.getParameter("courseid");
-    }else{
-        response.getWriter().println("not accepable value");
-    }
-   Connection con=ConnectionDB.getConnectioinstance();
-   PreparedStatement pre=con.prepareStatement("select * from courseindex where courseid=?");
-   pre.setString(1,cid);
-    set=pre.executeQuery();
+    Connection con=ConnectionDB.getConnectioinstance();
+    PreparedStatement pre= con.prepareStatement("SELECT * FROM tutorialpoint.courseindex");
+%>
+
+<%
+    ResultSet set= pre.executeQuery();
 %>
 
 
@@ -50,37 +43,40 @@ ResultSet set=null;
     <div class="row">
         <div class="col-10 offset-1">
             <div class="containermanu container">
-                <table class="table">
+                <table class="table text-uppercase">
                     <thead>
                     <tr>
                         <th scope="col">Course id</th>
                         <th scope="col">Index id</th>
-                        <th scope="col">Index Name</th>
+                        <th scope="col">course Index</th>
                         <th scope="col">Update</th>
                     </tr>
                     </thead>
                     <tbody>
-                    <%
-                        while(set.next())
-                        {
-                    %>
+                   <%--*******| while loop start|******--%>
+                   <%
+                       while(set.next())
+                       {
+                   %>
                     <tr>
-                        <th scope="row"><%= cid %></th>
-                        <th scope="row"><%= set.getString("courseindex_id")%></th>
-                        <td><%= set.getString("indexname")%></td>
-                        <td><%= set.getString("courseid")%></td>
+                        <th scope="row"><%= set.getString(1) %></th>
+                        <th scope="row"><%= set.getString(2) %></th>
+                        <td><%= set.getString(3) %></td>
+                        <td><%= set.getString(4) %></td>
                         <td>
                             <form action="edit" method="post" class="d-inline-flex">
-                                <input type="hidden" name="courseid" value="<%= set.getString("courseid")%>">
+                                <input type="hidden" name="courseindexid" value="<%= set.getString(2) %>">
                                 <button type="submit" class="btn btn-outline-primary">Edit</button>
                             </form>
                             <a class="btn btn-danger" href="update">Update</a>
 
                         </td>
                     </tr>
-                    <%
-                        }
-                    %>
+
+                   <%
+                       }
+                   %>
+                   <%--*******| while loop start|******--%>
                     </tbody>
                 </table>
             </div>

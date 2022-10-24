@@ -5,6 +5,7 @@ import com.database.ConnectionDB.ConnectionDB;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.SQLException;
 
 public final class CourseDao {
 
@@ -40,5 +41,22 @@ public final class CourseDao {
         return a;
     }
 
+    public final synchronized static int deletecourseData(String indexid){
+        Connection con=ConnectionDB.getConnectioinstance();
+        try {
+           PreparedStatement pre=con.prepareStatement("DELETE  FROM course WHERE courseindex_id=?");
+           pre.setString(1,indexid);
+           int a=pre.executeUpdate();
+           if(a!=0){
+               //success
+           }else{
+               //fail
+           }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+
+        }
+        return 1;
+    }
 
 }

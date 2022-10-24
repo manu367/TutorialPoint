@@ -19,6 +19,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/baguettebox.js/1.11.1/baguetteBox.min.css">
     <link rel="stylesheet" href="static_folder/css/Navbar-Centered-Links-icons.css">
+    <link id="theme-name" rel="stylesheet" href="static_folder/javascript/themes/light-theme.css">
+    <script src="static_folder/javascript/xsalert.js"></script>
     <link rel="stylesheet" href="static_folder/css/Search-Input-responsive.css">
     <style>
         .from-image{
@@ -72,7 +74,7 @@
                     <th scope="col">id</th>
                     <th scope="col">Course Name</th>
                     <th scope="col">Course Type</th>
-                    <th scope="col">Images</th>
+<%--                    <th scope="col">Images</th>--%>
                     <th scope="col">Operations</th>
                 </tr>
                 </thead>
@@ -82,14 +84,16 @@
                     <th scope="row"><c:out value="${table.c_id}"/></th>
                     <td><c:out value="${table.c_ename}"/></td>
                     <td><c:out value="${table.c_Teype}"/></td>
-                    <td><img alt="" src="static_folder/images/<c:out value="${table.image}"/>"  width="50" height="50" class="img-thumbnail img-fluid"></td>
+<%--                    <td><img alt="" src="static_folder/images/<c:out value="${table.image}"/>"  width="50" height="50" class="img-thumbnail img-fluid"></td>--%>
                     <td>
-                        <form action="index" method="post" class="d-inline-flex">
+                        <form action="courseindex" method="post" class="d-inline-flex">
                             <input type="hidden" name="courseid" value="<c:out value="${table.c_id}"/>">
-                            <button type="submit" class="btn btn-outline-primary">Edit</button>
+                            <button type="submit" class="btn btn-outline-primary">Add</button>
                         </form>
-                        <button class="btn btn-warning">Delete</button>
+                        <button class="btn btn-warning btnDelete " onmouseenter="manu('<c:out value="${table.c_id}"/>')">Delete</button>
                     </td>
+
+
 
                 </tr>
             </c:forEach>
@@ -122,7 +126,7 @@
                             <div class="col-md-7 offset-md-1 p-2" >
 
                                 <div class="input-group mb-3 mt-md-4" id="group">
-                                    <input type="text" class="form-control" placeholder="course id" disabled id="courseid" name="id">
+                                    <input type="text" class="form-control" placeholder="course id" disabled id="courseid" name="cid">
                                     <button class="btn btn-outline-primary" type="button" id="buttonaddon2">Click</button>
                                 </div>
                                 <div class=" mt-md-4">
@@ -173,6 +177,112 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/baguettebox.js/1.11.1/baguetteBox.min.js"></script>
 <script src="static_folder/javascript//Lightbox-Gallery.js"></script>
 <script src="static_folder/javascript/confetti.js"></script>
+<script>
+    let cidmanu;
+    function manu(id) {
+            //console.log("hlo manu"+id);--%>
+            cidmanu=id;
+        }
+    $(
+        function () {
+        $('#theme-selector').change(function () {
+            var theme = $('#theme-selector').val();
+            $("#theme-name").attr('href', 'src/themes/' + theme + '.css');
+        })
+        $('.btnDelete').on('click', function () {
+            XSAlert({
+                title: 'Deleted item',
+                message: "Do you want to delete the item",
+                okButtonText: 'OK',
+                cancelButtonText: "Cancel",
+                closeOnOutsideClick: false,
+
+            }).then((result) => {
+                if (result == 'ok') {
+                    XSAlert({
+                        title: "item is deleteing...?",
+                        message: "Hold on, I'm gonna close in 2 seconds...",
+                        autoCloseTimer: 2000,
+                        hideProgressBar: false, // 'true' to hide
+                        hideProgressIcon: false, // 'true' to hide
+                        hideOkButton: true,
+                        hideCancelButton: true
+                        // You can also perform an action after cllosing the alert
+                    }).then((result) => {
+                        if (result == 'autoClosed') {
+                            XSAlert({ message: 'Item is safely deleted', hideCancelButton: true, closeOnOutsideClick: true })
+                        }
+                    })
+                    $(this).closest('tr').remove();
+                    (function(){
+                        console.log(cidmanu);
+                        alert(cidmanu);
+                        $.post("deleteproduct",
+                            {
+                                courseid: cidmanu
+                            },
+                            function(data, status){
+                                alert("Data: " + data + "\nStatus: " + status);
+                            });
+                    })();
+                }
+                else if (result == 'cancel') {
+                    XSAlert({
+                        title: "Ooooh",
+                        message: "Items is not deleted. Please try again later",
+                        icon: 'error',
+                        hideCancelButton: true,
+                    })
+                }
+            })
+        })
+        $('#auto-close').on('click', function () {
+            XSAlert({
+                title: "Hi there 😎",
+                message: "Hold on, I'm gonna close in 2 seconds...",
+                autoCloseTimer: 2000,
+                hideProgressBar: false, // 'true' to hide
+                hideProgressIcon: false, // 'true' to hide
+                hideOkButton: true,
+                hideCancelButton: true
+                // You can also perform an action after cllosing the alert
+            }).then((result) => {
+                if (result == 'autoClosed') {
+                    XSAlert({ message: 'Alert has closed automatically!', hideCancelButton: true, closeOnOutsideClick: true })
+                }
+            })
+        })
+    }
+    );
+</script>
+<%--<script>--%>
+<%--    let cidmanu;--%>
+<%--    function manu(id) {--%>
+<%--        //console.log("hlo manu"+id);--%>
+<%--        cidmanu=id;--%>
+<%--    }--%>
+<%--  $(document).ready(()=>{--%>
+<%--      $(".btnDelete").on('click',function () {--%>
+<%--          XSAlert({--%>
+<%--              title: "Hey, I'm here! ↗️",--%>
+<%--              position: 'top-right',--%>
+<%--              hideCancelButton: true--%>
+<%--          })--%>
+<%--         //  $(this).closest('tr').remove();--%>
+<%--         //  var globalvalue=$(this);--%>
+<%--         //  var clo=$(this).closest('tr');--%>
+<%--         //  var cd=$(this).closest('tr').children();--%>
+<%--         // // console.log(globalvalue);--%>
+<%--         //  //console.log(clo);--%>
+<%--         //  console.log("value="+cidmanu);--%>
+<%--         //  (function(){--%>
+<%--         //--%>
+<%--         //  })();--%>
+<%--      });--%>
+<%--  });--%>
+<%--  --%>
+<%--  --%>
+<%--</script>--%>
 </body>
 <script src="static_folder/javascript/addJavascript.js"></script>
 </html>

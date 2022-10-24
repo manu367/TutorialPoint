@@ -47,6 +47,10 @@ public class AddCourse extends HttpServlet {
 
     }
 
+    @Override
+    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        resp.getWriter().println("nkjsbnkjbxkj b");
+    }
 }
 
 
